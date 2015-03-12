@@ -1,0 +1,59 @@
+@mixin breakpoint($class) {
+  @if $class == xxs {
+    @media (max-width: 479px) { @content; }
+  }
+  @if $class == xs {
+    @media (min-width: 480px) { @content; }
+  }
+ 
+  @else if $class == sm {
+    @media (min-width: 768px) { @content; }
+  }
+ 
+  @else if $class == md {
+    @media (min-width: 1020px) { @content; }
+  }
+ 
+  @else if $class == lg {
+    @media (min-width: 1200px) { @content; }
+  }
+ 
+  @else {
+    @warn "Breakpoint mixin supports: xs, sm, md, lg";
+  }
+}
+
+@mixin minWidth($minWidth){
+  @media (min-width: $minWidth) { @content; }
+}
+
+@mixin maxWidth($maxWidth){
+  @media (max-width: $maxWidth) { @content; }
+}
+
+@mixin tableHeader($totalWidth, $leftSpacing, $leftPadding){
+  width: $totalWidth;
+  text-align: right;
+  
+  & span{
+    width: $totalWidth - $leftSpacing -  1px;
+    margin-right: 1px;
+    padding-left: $leftPadding;
+  }
+}
+
+@function em($size){
+  @return $size/16 + em;
+}
+@function rem($size){
+  @return $size/16 + rem;
+}
+
+@function calcPercent($target, $container) {
+  @return ($target / $container) * 100%;
+}
+
+
+
+/* Project specific */
+
