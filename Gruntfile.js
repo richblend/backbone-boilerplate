@@ -7,6 +7,29 @@ module.exports = function(grunt) {
 						' * Build date: <%= grunt.template.today("yyyy-mm-dd HH:MM:ss") %>\n'+
 						' */\n\n';
 
+	
+	
+	//add your build files here in the order they are needed
+	var appFiles = [
+		'tmp/js/vendor/vendor.js', //leave this one here
+		
+		'src/js/app.js',
+		'src/js/mediator.js',
+		'src/js/router.js',
+		'src/js/views/base_view.js'
+
+	];
+
+
+	//vendor files will be bundled into js/vendor/vendor.js
+	var vendorFiles = [
+		'bower_components/jquery/dist/jquery.js',
+		'bower_components/underscore/underscore.js',
+		'bower_components/backbone/backbone.js'
+	];
+
+
+
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -40,19 +63,13 @@ module.exports = function(grunt) {
 				banner: bannerContent
 			},
 			
-			/* Build any vendor scrips we feel appropriate into one file vendor.js. Order is specified */
 			vendor: {
-				src: [
-					'bower_components/jquery/dist/jquery.js',
-					'bower_components/underscore/underscore.js',
-					'bower_components/backbone/backbone.js'
-					
-				],
+				src: vendorFiles,
 				dest: 'tmp/js/vendor/vendor.js'
 			},
 
 			source: {
-				src: ['src/js/**/*.js', '!src/js/vendor/**/*.js'],
+				src: appFiles,
 				dest: 'tmp/js/main.js'
 			}
 			
@@ -162,6 +179,7 @@ module.exports = function(grunt) {
 			}
 		},
 
+
 		autoprefixer: {
 
 		    options: {
@@ -190,7 +208,7 @@ module.exports = function(grunt) {
 
 		watch: {
 			sass: {
-				files: ['src/scss/*.scss'],
+				files: ['src/scss/**/*.scss'],
 				tasks: ['sass', 'autoprefixer'],
 			},
 			scripts: {
@@ -214,7 +232,6 @@ module.exports = function(grunt) {
 					base: 'dist',
 					middleware: function(connect) {
 					    return [
-					      
 							connect().use('/bower_components', connect.static('./bower_components')),
 							connect.static('dist')
 					      
@@ -244,6 +261,7 @@ module.exports = function(grunt) {
 		    }
 		},
 
+
 		injector: {
 		    
 		    dev: {
@@ -258,8 +276,7 @@ module.exports = function(grunt) {
 					}
 		    	},
 				files: {
-					//inject vendor at top, then the source. Exclude vendor dir as its already been concatenated into vendor js.
-					'tmp/index.html': ['dist/js/vendor/vendor.js', 'src/js/**/*.js', '!src/js/vendor/**/*.js']
+					'tmp/index.html': appFiles
 
 				}
 			},
@@ -298,7 +315,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-string-replace');
 	grunt.loadNpmTasks('grunt-autoprefixer');
 	grunt.loadNpmTasks('grunt-contrib-connect');
-	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-open');
 	grunt.loadNpmTasks('grunt-injector');
 
@@ -309,7 +325,6 @@ module.exports = function(grunt) {
 		- run: Do a dev build
 		- watch: Same as dev build
 		- serve: Run local server on 9001
-
 	*/
 	
 
@@ -317,7 +332,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', [
 		//clean tmp + dist/js directories
 		'clean', 
-		
 		//concatenate  vendor files (probably mostly from bower_components, but also from wherever we want) into one file and copy that to tmp
 		'concat:vendor', 
 		//concatenate  source files into tmp
@@ -330,7 +344,6 @@ module.exports = function(grunt) {
 		'injector:build',
 		//copy index.html to tmp while doing some str replaces on it.
 		'string-replace:build',
-		
 		//compile sass
 		'sass',
 		//add vendor prefixes to compiled css files
@@ -353,12 +366,12 @@ module.exports = function(grunt) {
 		'injector:dev',
 		//copy index.html to tmp while doing some str replaces on it
 		'string-replace:dev',
-		
 		//compile sass
 		'sass',
 		//add vendor prefixes to compiled css files
 		'autoprefixer'
 	]);
+
 
 	grunt.registerTask('serve', [
 		'open:dist',
@@ -367,7 +380,6 @@ module.exports = function(grunt) {
 	]);
 
 	
-
 	grunt.registerTask('test', [
 		'run',
 		'open:test',

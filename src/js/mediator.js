@@ -1,4 +1,4 @@
-var App = App || {};
+App = window.App || {};
 
 App.Mediator = (function(){
 	
